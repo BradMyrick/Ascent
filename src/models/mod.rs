@@ -237,18 +237,17 @@ impl Mountain {
         let mut tiles = Vec::new();
 
         for level in 0..levels {
-            for x in 0..=level {
-                for y in 0..=level {
-                    let z = (level as i32) - (x as i32) - (y as i32);
-                    if z >= 0 {
-                        let tile = Tile {
-                            x,
-                            y,
-                            z: z as u32,
+            for x in -(level as i32)..=level as i32 {
+                for y in -(level as i32)..=level as i32 {
+                    let z = -(x + y);
+                    if z.unsigned_abs() <= level {
+                        tiles.push(Tile {
+                            x: x.unsigned_abs(),
+                            y: y.unsigned_abs(),
+                            z: z.unsigned_abs(),
                             level,
                             content: TileContent::Empty,
-                        };
-                        tiles.push(tile);
+                        });
                     }
                 }
             }
@@ -350,7 +349,7 @@ impl Mountain {
 
 // TESTS
 #[cfg(test)]
-mod model_tests {
+mod card_tests {
     use super::*;
 
     #[test]
@@ -399,7 +398,11 @@ mod model_tests {
         assert_eq!(player.hand.len(), 0);
         assert_eq!(player.deck.cards.len(), 0);
     }
+}
 
+#[cfg(test)]
+mod player_tests {
+    use super::*;
     #[test]
     fn test_player_new() {
         let deck = Deck {
@@ -437,6 +440,11 @@ mod model_tests {
         assert_eq!(player.hand.len(), 0);
         assert_eq!(player.mana, 0);
     }
+}
+
+#[cfg(test)]
+mod mountain_tests {
+    use super::*;
 
     #[test]
     fn test_mountain_movement() {
@@ -499,5 +507,28 @@ mod model_tests {
         let tiles_range_2 = mountain.get_tiles_in_range(center, 2);
 
         assert!(tiles_range_1.len() < tiles_range_2.len());
+    }
+
+    #[test]
+    fn test_size_small() {
+        assert!(std::panic::catch_unwind(|| Mountain::new(0)).is_err());
+    }
+
+    #[test]
+    fn test_size_large() {
+        assert!(std::panic::catch_unwind(|| Mountain::new(51)).is_err());
+    }
+
+    #[test]
+    fn test_get_level() {
+        let mountain = Mountain::new(3);
+
+        let level_0 = mountain.get_level(0);
+        let level_1 = mountain.get_level(1);
+        let level_2 = mountain.get_level(2);
+
+        assert_eq!(level_0.len(), 1, "Level 0 should have 1 tile");
+        assert_eq!(level_1.len(), 6, "Level 1 should have 6 tiles");
+        assert_eq!(level_2.len(), 12, "Level 2 should have 12 tiles");
     }
 }
