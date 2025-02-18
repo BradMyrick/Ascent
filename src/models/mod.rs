@@ -4,7 +4,7 @@ use crate::errors::GameError;
 
 use uuid::Uuid;
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Eq)]
 pub enum Rarity {
     Common,
     Uncommon,
@@ -12,7 +12,7 @@ pub enum Rarity {
     Legendary,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum CardType {
     Climber,
     Spell,
@@ -21,7 +21,7 @@ pub enum CardType {
     Gear,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Card {
     pub id: Uuid,
     pub name: String,
@@ -68,7 +68,7 @@ impl Player {
         Self {
             id: Uuid::new_v4(),
             name,
-            health: 30, // Or whatever your base health is
+            health: 30,
             max_health: 30,
             hand: Vec::new(),
             deck,
@@ -136,7 +136,7 @@ impl Player {
 
     pub fn add_health_boost(&mut self, amount: u32, duration: Duration) {
         self.health_boosts.push((amount, duration));
-        // Recalculate max health after adding boost
+
         let new_max = self.max_health();
         self.health = self.health.min(new_max);
     }
@@ -203,13 +203,13 @@ impl Player {
 
 // Mountain is our gameboard where the game is played
 // it is made up of hexagonal tiles in elevated stages
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Mountain {
     pub tiles: Vec<Tile>,
     pub levels: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum TileContent {
     Empty,
     Card(Card),
@@ -217,7 +217,7 @@ pub enum TileContent {
     Player(Uuid),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Tile {
     pub x: u32,
     pub y: u32,
@@ -230,6 +230,9 @@ impl Mountain {
     pub fn new(levels: u32) -> Self {
         if levels == 0 {
             panic!("Mountain must have at least one level");
+        }
+        if levels > 50 {
+            panic!("Mountain's have a maximum height of 50")
         }
         let mut tiles = Vec::new();
 

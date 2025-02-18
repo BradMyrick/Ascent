@@ -52,3 +52,33 @@ impl GameState {
         }
     }
 }
+
+//TESTS
+
+#[cfg(test)]
+mod game_state_tests {
+    use super::*;
+
+    #[test]
+    fn test_new_game_state() {
+        let player1 = Player::new(
+            "Player 1".to_string(),
+            crate::Deck {
+                cards: vec![],
+                owner_id: Uuid::new_v4(),
+            },
+        );
+        let player2 = Player::new(
+            "Player 2".to_string(),
+            crate::Deck {
+                cards: vec![],
+                owner_id: Uuid::new_v4(),
+            },
+        );
+        let game_state = GameState::new(player1.clone(), player2);
+
+        assert_eq!(game_state.players.len(), 2);
+        assert_eq!(game_state.active_player, player1.id);
+        assert_eq!(game_state.turn_number, 1);
+    }
+}

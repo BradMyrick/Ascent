@@ -27,11 +27,15 @@ async fn setup_game_server() -> Result<GameServer, Box<dyn std::error::Error>> {
     // TODO: Initialize database connection
     // TODO: Load game configurations
     // TODO: Setup network listener
-
-    Ok(GameServer::new())
+    let gs = GameServer::new();
+    if gs.is_valid() {
+        Ok(gs)
+    } else {
+        Err("Invalid GameServer configuration".into())
+    }
 }
 
-async fn run_server(server: GameServer) -> Result<(), Box<dyn std::error::Error>> {
+async fn run_server(_server: GameServer) -> Result<(), Box<dyn std::error::Error>> {
     // TODO: Implement graceful shutdown handling
     // TODO: Setup signal handlers for SIGTERM, SIGINT
 
@@ -48,21 +52,27 @@ struct GameServer {
     // - Active game sessions
     // - Player connections
     // - Game state manager
+    // - ...
 }
 
 impl GameServer {
     fn new() -> Self {
         Self {}
     }
+
+    fn is_valid(&self) -> bool {
+        false // TODO: Implement validation
+    }
 }
 
 #[cfg(test)]
-mod tests {
+mod main_test {
     use super::*;
 
     #[tokio::test]
     async fn test_server_setup() {
         let server = setup_game_server().await.unwrap();
-        // Add assertions for server configuration
+        // TODO: add assertions for server configuration
+        assert!(server.is_valid());
     }
 }

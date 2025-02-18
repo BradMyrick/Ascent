@@ -15,7 +15,7 @@ pub enum EffectType {
     Buff,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Effect {
     Damage(DamageEffect),
     Heal(HealEffect),
@@ -24,13 +24,13 @@ pub enum Effect {
     BuffStats(BuffEffect),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct EffectValue {
     pub base: u32,
     pub scaling: Option<ScalingFactor>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum ScalingFactor {
     MountainLevel(f32), // Scales with mountain level
     CardsInHand(f32),   // Scales with number of cards in hand
@@ -38,7 +38,7 @@ pub enum ScalingFactor {
     ManaSpent(f32),     // Scales with mana spent this turn
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum EffectTarget {
     Self_,                   // The card that played the effect
     Specific(Uuid),          // A specific target by UUID
@@ -58,7 +58,7 @@ pub enum EffectTarget {
     },
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum TargetCondition {
     PowerGreaterThan(u32),
     PowerLessThan(u32),
@@ -66,28 +66,28 @@ pub enum TargetCondition {
     IsRarity(Rarity),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct DamageEffect {
     pub value: EffectValue,
     pub target: EffectTarget,
     pub penetrating: bool, // Ignores shields/armor
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct HealEffect {
     pub value: EffectValue,
     pub target: EffectTarget,
     pub over_heal: bool, // Can heal beyond max health
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct DrawEffect {
     pub cards: u32,
     pub target: EffectTarget,
     pub filter: Option<DrawFilter>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct BoostEffect {
     pub value: EffectValue,
     pub target: EffectTarget,
@@ -95,7 +95,7 @@ pub struct BoostEffect {
     pub duration: Duration,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct BuffEffect {
     pub power: i32, // Can be negative for debuffs
     pub health: i32,
@@ -103,28 +103,28 @@ pub struct BuffEffect {
     pub duration: Duration,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum BoostType {
     Power,
     Health,
     Both,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Duration {
     Temporary(u32),          // Lasts for X turns
     UntilMountainLevel(u32), // Lasts until reaching specific mountain level
     Permanent,               // Lasts for the rest of the game
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum DrawFilter {
     Cost(CostFilter),
     Type(CardType),
     Rarity(Rarity),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum CostFilter {
     Equal(u32),
     LessThan(u32),
